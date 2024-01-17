@@ -13,3 +13,7 @@ output "bastion_ips" {
 output "private_ips" {
   value = module.ec2.private_ips
 }
+
+output "db_address" {
+  value = module.rds.address_db
+}

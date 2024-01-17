@@ -2,7 +2,13 @@ provider "aws" {
   region = "eu-central-1"
 }
 
-
+terraform {
+  backend "s3" {
+    bucket = "terraformtfstate-susel"
+    key = "dev/project13/terraform.tfstate"
+    region = "eu-central-1"
+  }
+}
 
 module "vpc-dev" {
   source = "../modules/aws_net"
@@ -29,6 +35,18 @@ module "ec2" {
   instance_type      = var.ec2_instance_type
   public_subnet_ids  = module.vpc-dev.public_subnet_ids
   private_subnet_ids = module.vpc-dev.private_subnet_ids
+}
+
+module "rds" {
+  source = "../modules/aws_rds"
+  user = var.rds_user
+  pass = var.rds_password
+  public_subnet_ids  = module.vpc-dev.public_subnet_ids
+  private_subnet_ids = module.vpc-dev.private_subnet_ids
+  class = var.class_db
+  engine = var.engine_db
+  az = var.rds_az
+  env = var.enviroment
 }
 
 #-------------------------------------------------------------------------------------------
